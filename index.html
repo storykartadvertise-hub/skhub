@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SK Hub | Open-Source Marketing & AI Creative Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active { border-bottom: 2px solid #6366f1; color: #6366f1; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/30">SK</div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">SK Hub <span class="text-xs font-normal bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full ml-1">v1.0 Open Source</span></h1>
+                    <p class="text-xs text-slate-400">Creative Advertising & Performance Marketing Suite</p>
+                </div>
+            </div>
+            <a href="https://github.com/storykartadvertise-hub/skhub" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg border border-slate-700 transition flex items-center gap-2">
+                <span>★ Star on GitHub</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-800 mb-8 space-x-6 overflow-x-auto">
+            <button onclick="switchTab('video')" id="tab-video" class="pb-3 text-sm tab-active transition whitespace-nowrap">🎬 AI Video Prompt Architect</button>
+            <button onclick="switchTab('image')" id="tab-image" class="pb-3 text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">🎨 Commercial Image Builder</button>
+            <button onclick="switchTab('roas')" id="tab-roas" class="pb-3 text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">📊 Meta Ads & ROAS Calculator</button>
+        </div>
+
+        <!-- TAB 1: AI VIDEO PROMPT ARCHITECT (5-Part Formula) -->
+        <section id="section-video" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-base font-semibold text-indigo-400">5-Part Video Prompt Formula</h2>
+                    <span class="text-xs text-slate-400">[Scene] + [Element] + [Movement] + [Audio] + [Other]</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">1. Scene (Location, time of day, mood, background)</label>
+                    <input type="text" id="vid-scene" oninput="buildVideoPrompt()" placeholder="e.g., Modern minimalist cafe interior at golden hour, warm cinematic atmosphere" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">2. Element (Main subject, clothing, foreground props)</label>
+                    <input type="text" id="vid-element" oninput="buildVideoPrompt()" placeholder="e.g., Artisanal iced coffee glass with condensation droplets on a wooden table" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">3. Movement (Camera motion, subject & environmental motion)</label>
+                    <input type="text" id="vid-movement" oninput="buildVideoPrompt()" placeholder="e.g., Slow macro push-in camera movement while creamy milk swirls into the coffee" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">4. Audio (Dialogue, ambient soundscape, Foley, music)</label>
+                    <input type="text" id="vid-audio" oninput="buildVideoPrompt()" placeholder="e.g., Crisp ice clinking Foley, soft lo-fi acoustic background music, cafe ambiance" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">5a. Visual Style</label>
+                        <select id="vid-style" onchange="buildVideoPrompt()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="Commercial photorealistic, high-end agency production">Commercial Photorealistic</option>
+                            <option value="3D Pixar animation style, vibrant subsurface scattering">3D Pixar Animation Style</option>
+                            <option value="Cinematic anamorphic film look, Arri Alexa grading">Cinematic Film Look</option>
+                            <option value="Clean minimalist studio product showcase">Minimalist Studio Showcase</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">5b. Aspect Ratio</label>
+                        <select id="vid-ratio" onchange="buildVideoPrompt()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="9:16 vertical reel format">9:16 (Reels / Shorts)</option>
+                            <option value="16:9 widescreen cinema">16:9 (YouTube / Landscape)</option>
+                            <option value="4:5 social feed format">4:5 (Meta Feed Ad)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">5c. Resolution & Lighting</label>
+                        <select id="vid-lighting" onchange="buildVideoPrompt()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="8K resolution, cinematic studio lighting, shallow depth of field">8K + Studio Lighting</option>
+                            <option value="8K resolution, dramatic rim lighting, color graded">8K + Dramatic Rim Light</option>
+                            <option value="8K resolution, soft diffused natural daylight">8K + Soft Daylight</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Box -->
+            <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Compiled Video Prompt</span>
+                        <span class="text-xs text-emerald-400" id="vid-copy-status"></span>
+                    </div>
+                    <textarea id="vid-output" readonly rows="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 leading-relaxed focus:outline-none resize-none"></textarea>
+                </div>
+                <div class="mt-4 flex gap-3">
+                    <button onclick="copyText('vid-output', 'vid-copy-status')" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-lg shadow-indigo-600/20">
+                        Copy Video Prompt
+                    </button>
+                    <button onclick="loadVideoSample()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-sm transition">
+                        Load Sample
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: COMMERCIAL IMAGE PROMPT BUILDER -->
+        <section id="section-image" class="hidden grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <h2 class="text-base font-semibold text-indigo-400 mb-2">Commercial Ad Visual Spec Builder</h2>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Product / Subject Hero</label>
+                    <input type="text" id="img-subject" oninput="buildImagePrompt()" placeholder="e.g., Luxury perfume bottle resting on a wet black slate podium" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Environment & Background Composition</label>
+                    <input type="text" id="img-bg" oninput="buildImagePrompt()" placeholder="e.g., Minimalist dark background with subtle golden mist and generous negative space for typography" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Aspect Ratio</label>
+                        <select id="img-ratio" onchange="buildImagePrompt()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm">
+                            <option value="--ar 4:5">4:5 (Instagram/Meta Feed)</option>
+                            <option value="--ar 9:16">9:16 (Story / Reel Cover)</option>
+                            <option value="--ar 1:1">1:1 (Square Carousel)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Aesthetic Preset</label>
+                        <select id="img-preset" onchange="buildImagePrompt()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm">
+                            <option value="commercial studio photography, 85mm lens, f/2.8, shallow depth of field, 8K ultra-detailed">Commercial Studio 8K</option>
+                            <option value="3D Pixar style render, Octane render, soft vibrant lighting, 8K resolution">3D Pixar Visual Style</option>
+                            <option value="minimalist editorial poster layout, clean visual hierarchy, bold lighting, 8K">Minimalist Editorial</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Compiled Image Prompt</span>
+                        <span class="text-xs text-emerald-400" id="img-copy-status"></span>
+                    </div>
+                    <textarea id="img-output" readonly rows="7" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 leading-relaxed focus:outline-none resize-none"></textarea>
+                </div>
+                <button onclick="copyText('img-output', 'img-copy-status')" class="mt-4 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-xl text-sm transition">
+                    Copy Image Prompt
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 3: META ADS & ROAS CALCULATOR -->
+        <section id="section-roas" class="hidden grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-6 space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <h2 class="text-base font-semibold text-indigo-400 mb-2">Campaign Performance Parameters</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Total Ad Spend (₹ / $)</label>
+                        <input type="number" id="calc-spend" value="15000" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Average Order Value (AOV)</label>
+                        <input type="number" id="calc-aov" value="1200" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Total Link Clicks</label>
+                        <input type="number" id="calc-clicks" value="1250" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Total Conversions / Sales</label>
+                        <input type="number" id="calc-conversions" value="45" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+                    <p class="text-xs text-slate-400">Total Revenue</p>
+                    <p class="text-2xl font-bold text-white mt-1" id="res-revenue">54,000</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+                    <p class="text-xs text-slate-400">Return on Ad Spend (ROAS)</p>
+                    <p class="text-2xl font-bold text-emerald-400 mt-1" id="res-roas">3.60x</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+                    <p class="text-xs text-slate-400">Cost Per Acquisition (CPA)</p>
+                    <p class="text-2xl font-bold text-indigo-400 mt-1" id="res-cpa">333.33</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+                    <p class="text-xs text-slate-400">Conversion Rate (CVR)</p>
+                    <p class="text-2xl font-bold text-amber-400 mt-1" id="res-cvr">3.60%</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+        <p>Built & Maintained by <strong>StoryKart Advertise</strong> • Licensed under MIT Open Source License</p>
+    </footer>
+
+    <script>
+        function switchTab(tab) {
+            ['video', 'image', 'roas'].forEach(t => {
+                document.getElementById('section-' + t).classList.add('hidden');
+                document.getElementById('section-' + t).classList.remove('grid');
+                document.getElementById('tab-' + t).classList.remove('tab-active');
+                document.getElementById('tab-' + t).classList.add('text-slate-400');
+            });
+            const activeSection = document.getElementById('section-' + tab);
+            activeSection.classList.remove('hidden');
+            activeSection.classList.add('grid');
+            const activeTab = document.getElementById('tab-' + tab);
+            activeTab.classList.add('tab-active');
+            activeTab.classList.remove('text-slate-400');
+        }
+
+        function buildVideoPrompt() {
+            const scene = document.getElementById('vid-scene').value.trim() || '[Specify Scene environment & mood]';
+            const element = document.getElementById('vid-element').value.trim() || '[Specify Main Subject & foreground props]';
+            const movement = document.getElementById('vid-movement').value.trim() || '[Specify Camera & Subject movement]';
+            const audio = document.getElementById('vid-audio').value.trim() || '[Specify Foley, ambient audio & music]';
+            const style = document.getElementById('vid-style').value;
+            const ratio = document.getElementById('vid-ratio').value;
+            const lighting = document.getElementById('vid-lighting').value;
+
+            const prompt = `[Scene]: ${scene}. [Element]: ${element}. [Movement]: ${movement}. [Audio]: ${audio}. [Other]: ${style}, ${lighting}, ${ratio}.`;
+            document.getElementById('vid-output').value = prompt;
+        }
+
+        function loadVideoSample() {
+            document.getElementById('vid-scene').value = 'Sleek minimalist studio tabletop with dark slate texture and warm golden ambient rim glow';
+            document.getElementById('vid-element').value = 'Freshly baked fudgy chocolate brownie slice with warm melted chocolate drizzle on a matte ceramic plate';
+            document.getElementById('vid-movement').value = 'Slow cinematic macro tracking shot pushing in as warm chocolate gently cascades over the crust';
+            document.getElementById('vid-audio').value = 'Rich ASMR chocolate pour Foley, subtle warm crackle, upbeat modern commercial background score';
+            buildVideoPrompt();
+        }
+
+        function buildImagePrompt() {
+            const subj = document.getElementById('img-subject').value.trim() || 'Commercial hero product on minimalist podium';
+            const bg = document.getElementById('img-bg').value.trim() || 'Clean studio background with generous whitespace for ad copy';
+            const preset = document.getElementById('img-preset').value;
+            const ratio = document.getElementById('img-ratio').value;
+            document.getElementById('img-output').value = `${subj}, ${bg}, ${preset} ${ratio}`;
+        }
+
+        function calculateROAS() {
+            const spend = parseFloat(document.getElementById('calc-spend').value) || 0;
+            const aov = parseFloat(document.getElementById('calc-aov').value) || 0;
+            const clicks = parseFloat(document.getElementById('calc-clicks').value) || 0;
+            const conv = parseFloat(document.getElementById('calc-conversions').value) || 0;
+
+            const revenue = conv * aov;
+            const roas = spend > 0 ? (revenue / spend).toFixed(2) : '0.00';
+            const cpa = conv > 0 ? (spend / conv).toFixed(2) : '0.00';
+            const cvr = clicks > 0 ? ((conv / clicks) * 100).toFixed(2) : '0.00';
+
+            document.getElementById('res-revenue').innerText = revenue.toLocaleString();
+            document.getElementById('res-roas').innerText = roas + 'x';
+            document.getElementById('res-cpa').innerText = cpa;
+            document.getElementById('res-cvr').innerText = cvr + '%';
+        }
+
+        function copyText(elementId, statusId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            const status = document.getElementById(statusId);
+            status.innerText = 'Copied!';
+            setTimeout(() => { status.innerText = ''; }, 2000);
+        }
+
+        // Initialize defaults
+        loadVideoSample();
+        buildImagePrompt();
+        calculateROAS();
+    </script>
+</body>
+</html>
