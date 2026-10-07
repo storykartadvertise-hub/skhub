@@ -101,7 +101,7 @@
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Compiled Video Prompt</span>
-                        <span class="text-xs text-emerald-400" id="vid-copy-status"></span>
+                        <span class="text-xs text-emerald-400" id="vid-copy-status" role="status"></span>
                     </div>
                     <textarea id="vid-output" readonly rows="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 leading-relaxed focus:outline-none resize-none"></textarea>
                 </div>
@@ -152,7 +152,7 @@
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Compiled Image Prompt</span>
-                        <span class="text-xs text-emerald-400" id="img-copy-status"></span>
+                        <span class="text-xs text-emerald-400" id="img-copy-status" role="status"></span>
                     </div>
                     <textarea id="img-output" readonly rows="7" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 leading-relaxed focus:outline-none resize-none"></textarea>
                 </div>
@@ -166,22 +166,24 @@
         <section id="section-roas" class="hidden grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-6 space-y-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
                 <h2 class="text-base font-semibold text-indigo-400 mb-2">Campaign Performance Parameters</h2>
+                <p class="text-xs text-slate-400">Use one currency throughout. Revenue is estimated from sales × average order value; ROAS does not measure profit.</p>
+                <p id="calc-error" role="status" class="text-xs text-amber-400"></p>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Total Ad Spend (₹ / $)</label>
-                        <input type="number" id="calc-spend" value="15000" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <input type="number" id="calc-spend" min="0" step="any" required aria-describedby="calc-error" value="15000" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Average Order Value (AOV)</label>
-                        <input type="number" id="calc-aov" value="1200" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <input type="number" id="calc-aov" min="0" step="any" required aria-describedby="calc-error" value="1200" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Total Link Clicks</label>
-                        <input type="number" id="calc-clicks" value="1250" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <input type="number" id="calc-clicks" min="0" step="1" required aria-describedby="calc-error" value="1250" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Total Conversions / Sales</label>
-                        <input type="number" id="calc-conversions" value="45" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <input type="number" id="calc-conversions" min="0" step="1" required aria-describedby="calc-error" value="45" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
                     </div>
                 </div>
             </div>
@@ -259,29 +261,57 @@
         }
 
         function calculateROAS() {
-            const spend = parseFloat(document.getElementById('calc-spend').value) || 0;
-            const aov = parseFloat(document.getElementById('calc-aov').value) || 0;
-            const clicks = parseFloat(document.getElementById('calc-clicks').value) || 0;
-            const conv = parseFloat(document.getElementById('calc-conversions').value) || 0;
-
+            const ids = ['calc-spend', 'calc-aov', 'calc-clicks', 'calc-conversions'];
+            const fields = ids.map(id => document.getElementById(id));
+            const values = fields.map(field => Number(field.value));
+            const invalid = fields.map((field, i) =>
+                field.value.trim() === '' || !Number.isFinite(values[i]) || values[i] < 0 ||
+                (i >= 2 && !Number.isSafeInteger(values[i])));
+            fields.forEach((field, i) => field.setAttribute('aria-invalid', String(invalid[i])));
+            const outputs = ['res-revenue', 'res-roas', 'res-cpa', 'res-cvr'];
+            const error = document.getElementById('calc-error');
+            if (invalid.some(Boolean)) {
+                error.innerText = 'Enter non-negative numbers in every field. Clicks and sales must be whole numbers.';
+                outputs.forEach(id => { document.getElementById(id).innerText = 'N/A'; });
+                return;
+            }
+            const [spend, aov, clicks, conv] = values;
             const revenue = conv * aov;
-            const roas = spend > 0 ? (revenue / spend).toFixed(2) : '0.00';
-            const cpa = conv > 0 ? (spend / conv).toFixed(2) : '0.00';
-            const cvr = clicks > 0 ? ((conv / clicks) * 100).toFixed(2) : '0.00';
-
+            const roas = spend > 0 ? revenue / spend : null;
+            const cpa = conv > 0 ? spend / conv : null;
+            const cvr = clicks > 0 ? conv / clicks * 100 : null;
+            if ([revenue, roas, cpa, cvr].some(value => value !== null && !Number.isFinite(value))) {
+                error.innerText = 'These values are too large to calculate. Enter smaller numbers.';
+                outputs.forEach(id => { document.getElementById(id).innerText = 'N/A'; });
+                return;
+            }
+            error.innerText = '';
             document.getElementById('res-revenue').innerText = revenue.toLocaleString();
-            document.getElementById('res-roas').innerText = roas + 'x';
-            document.getElementById('res-cpa').innerText = cpa;
-            document.getElementById('res-cvr').innerText = cvr + '%';
+            document.getElementById('res-roas').innerText = roas === null ? 'N/A' : roas.toFixed(2) + 'x';
+            document.getElementById('res-cpa').innerText = cpa === null ? 'N/A' : cpa.toFixed(2);
+            document.getElementById('res-cvr').innerText = cvr === null ? 'N/A' : cvr.toFixed(2) + '%';
         }
 
-        function copyText(elementId, statusId) {
-            const copyText = document.getElementById(elementId);
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
+        const copyAttempts = new Map();
+        async function copyText(elementId, statusId) {
+            const output = document.getElementById(elementId);
             const status = document.getElementById(statusId);
-            status.innerText = 'Copied!';
-            setTimeout(() => { status.innerText = ''; }, 2000);
+            const attempt = (copyAttempts.get(statusId) || 0) + 1;
+            copyAttempts.set(statusId, attempt);
+            output.select();
+            status.innerText = 'Copying…';
+            try {
+                await navigator.clipboard.writeText(output.value);
+                if (copyAttempts.get(statusId) !== attempt) return;
+                status.innerText = 'Copied!';
+                setTimeout(() => {
+                    if (copyAttempts.get(statusId) === attempt) status.innerText = '';
+                }, 2000);
+            } catch {
+                if (copyAttempts.get(statusId) === attempt) {
+                    status.innerText = 'Copy unavailable. Select the prompt and copy it manually.';
+                }
+            }
         }
 
         // Initialize defaults
