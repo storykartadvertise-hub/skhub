@@ -1,6 +1,6 @@
 # StoryKart Advertise — Repository Instructions
 
-## Code Review Priorities
+## Code Review Rules
 - Identify real bugs, regressions and incorrect behavior.
 - Prioritize security, authentication, authorization, data loss and exposed secrets.
 - Check input validation, error handling and API failures.
