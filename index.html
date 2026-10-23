@@ -168,20 +168,24 @@
                 <h2 class="text-base font-semibold text-indigo-400 mb-2">Campaign Performance Parameters</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Total Ad Spend (₹ / $)</label>
-                        <input type="number" id="calc-spend" value="15000" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <label for="calc-spend" class="block text-xs text-slate-300 mb-1">Total Ad Spend (₹ / $)</label>
+                        <input type="number" id="calc-spend" min="0" aria-describedby="calc-spend-error" value="15000" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <p id="calc-spend-error" class="mt-1 text-xs text-red-400" aria-live="polite" hidden></p>
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Average Order Value (AOV)</label>
-                        <input type="number" id="calc-aov" value="1200" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <label for="calc-aov" class="block text-xs text-slate-300 mb-1">Average Order Value (AOV)</label>
+                        <input type="number" id="calc-aov" min="0" aria-describedby="calc-aov-error" value="1200" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <p id="calc-aov-error" class="mt-1 text-xs text-red-400" aria-live="polite" hidden></p>
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Total Link Clicks</label>
-                        <input type="number" id="calc-clicks" value="1250" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <label for="calc-clicks" class="block text-xs text-slate-300 mb-1">Total Link Clicks</label>
+                        <input type="number" id="calc-clicks" min="0" aria-describedby="calc-clicks-error" value="1250" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <p id="calc-clicks-error" class="mt-1 text-xs text-red-400" aria-live="polite" hidden></p>
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Total Conversions / Sales</label>
-                        <input type="number" id="calc-conversions" value="45" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <label for="calc-conversions" class="block text-xs text-slate-300 mb-1">Total Conversions / Sales</label>
+                        <input type="number" id="calc-conversions" min="0" aria-describedby="calc-conversions-error" value="45" oninput="calculateROAS()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm">
+                        <p id="calc-conversions-error" class="mt-1 text-xs text-red-400" aria-live="polite" hidden></p>
                     </div>
                 </div>
             </div>
@@ -259,6 +263,27 @@
         }
 
         function calculateROAS() {
+            let hasInvalidInput = false;
+            ['calc-spend', 'calc-aov', 'calc-clicks', 'calc-conversions'].forEach(id => {
+                const input = document.getElementById(id);
+                const error = document.getElementById(id + '-error');
+                const value = Number(input.value);
+                const message = value < 0 ? 'Value cannot be negative. Enter 0 or greater.'
+                    : input.validity.badInput || !Number.isFinite(value) ? 'Enter a valid number.' : '';
+                input.setCustomValidity(message);
+                input.setAttribute('aria-invalid', String(Boolean(message)));
+                error.textContent = message;
+                error.hidden = !message;
+                hasInvalidInput = hasInvalidInput || Boolean(message);
+            });
+
+            if (hasInvalidInput) {
+                ['res-revenue', 'res-roas', 'res-cpa', 'res-cvr'].forEach(id => {
+                    document.getElementById(id).innerText = '—';
+                });
+                return;
+            }
+
             const spend = parseFloat(document.getElementById('calc-spend').value) || 0;
             const aov = parseFloat(document.getElementById('calc-aov').value) || 0;
             const clicks = parseFloat(document.getElementById('calc-clicks').value) || 0;
