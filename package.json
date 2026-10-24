@@ -1,0 +1,29 @@
+{
+  "name": "skhub",
+  "version": "1.0.0",
+  "description": "Welcome to **SK Hub**, a centralized open-source repository designed for creative advertising, high-converting digital marketing workflows, and social media campaign assets.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npm run test:unit && npm run test:browser",
+    "test:unit": "node --test tests/roas.test.js",
+    "test:browser": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/storykartadvertise-hub/skhub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/storykartadvertise-hub/skhub/issues"
+  },
+  "homepage": "https://github.com/storykartadvertise-hub/skhub#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

@@ -1,2 +1,9 @@
 # Local Codex environment configuration
 .codex/
+
+# Node.js dependencies
+node_modules/
+
+# Playwright generated reports and test artifacts
+playwright-report/
+test-results/
